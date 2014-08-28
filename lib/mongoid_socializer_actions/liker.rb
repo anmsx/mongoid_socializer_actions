@@ -16,10 +16,10 @@ module Mongoid
         model.before_liked_by(self) if model.respond_to?('before_liked_by')
         model.likes.create!(liker: self)
         model.likers << self
-        model.inc(:likers_count, 1)
+        model.inc(likers_count: 1)
         model.after_liked_by(self) if model.respond_to?('after_liked_by')
         self.before_like(model) if self.respond_to?('before_like')
-        self.inc(:likes_count, 1)
+        self.inc(likes_count: 1)
         self.after_like(model) if self.respond_to?('after_like')
         return true
       else
@@ -43,11 +43,11 @@ module Mongoid
         likes.where(:likable_type => model.class.name, :likable_id => model.id).destroy
         model.likers.delete(self)
 
-        model.inc(:likers_count, -1)
+        model.inc(likers_count: -1)
         model.after_unliked_by(self) if model.respond_to?('after_unliked_by')
         self.before_unlike(model) if self.respond_to?('before_unlike')
 
-        self.inc(:likes_count, -1)
+        self.inc(likes_count: -1)
         self.after_unlike(model) if self.respond_to?('after_unlike')
 
         return true
